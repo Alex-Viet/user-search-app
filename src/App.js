@@ -7,6 +7,7 @@ export const App = () => {
   const [error, setError] = useState(null)
   const [users, setUsers] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState('desc')
 
   const handleInputChange = (evt) => {
     setValue(evt.target.value)
@@ -28,7 +29,9 @@ export const App = () => {
 
     setIsLoading(true)
 
-    getUsers(value).then((response) => {
+    getUsers(value, selectedOrder).then((response) => {
+      console.log(response)
+
       if (response?.status !== 200) {
         setError(
           'Что-то пошло не так. Возможно, проблемы с интернетом или сервером. Попробуйте позже',
@@ -59,6 +62,8 @@ export const App = () => {
     })
   }
 
+  console.log(users)
+
   return (
     <div className="App">
       <div>
@@ -67,6 +72,18 @@ export const App = () => {
           Поиск
         </button>
         {error && <p style={{ color: 'coral' }}>{error}</p>}
+      </div>
+      <div>
+        <label>
+          Сортировка по количеству репозиториев:
+          <select
+            name="selectedOrder"
+            onChange={(evt) => setSelectedOrder(evt.target.value)}
+          >
+            <option value="desc">По убыванию</option>
+            <option value="asc">По возрастанию</option>
+          </select>
+        </label>
       </div>
       <div>
         <ul>
