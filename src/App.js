@@ -8,6 +8,7 @@ export const App = () => {
   const [users, setUsers] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState('desc')
+  const [userId, setUserId] = useState(null)
 
   const handleInputChange = (evt) => {
     setValue(evt.target.value)
@@ -30,8 +31,6 @@ export const App = () => {
     setIsLoading(true)
 
     getUsers(value, selectedOrder).then((response) => {
-      console.log(response)
-
       if (response?.status !== 200) {
         setError(
           'Что-то пошло не так. Возможно, проблемы с интернетом или сервером. Попробуйте позже',
@@ -62,12 +61,20 @@ export const App = () => {
     })
   }
 
+  const toggleOpenInfo = (evt, actualUserId) => {
+    evt.preventDefault()
+
+    setUserId((prevUserId) =>
+      prevUserId === actualUserId ? null : actualUserId,
+    )
+  }
+
   console.log(users)
 
   return (
     <div className="App">
       <div>
-        <input type="text" onChange={handleInputChange} />
+        <input type="text" value={value} onChange={handleInputChange} />
         <button disabled={isLoading} onClick={handleSearchButtonClick}>
           Поиск
         </button>
@@ -88,8 +95,24 @@ export const App = () => {
       <div>
         <ul>
           {users.map((user) => (
-            <li key={user.id}>
-              <p>{user.login}</p>
+            <li className="user__list" key={user.id}>
+              <div>
+                <p
+                  className="user__login"
+                  onClick={(e) => toggleOpenInfo(e, user.id)}
+                >
+                  {user.login}
+                </p>
+                {userId === user.id && (
+                  <div>
+                    <img className="user__img" src={user.avatar_url} />
+                    <div className="user__link">
+                      <p>Ссылка на Github:</p>
+                      <a href={user.html_url}>{user.html_url}</a>
+                    </div>
+                  </div>
+                )}
+              </div>
             </li>
           ))}
         </ul>

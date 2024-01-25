@@ -1,5 +1,19 @@
 .App {
   margin: 0;
   padding: 0;
-  text-align: center;
+}
+
+.user__login {
+  cursor: pointer;
+}
+
+.user__img {
+  width: 200px;
+}
+
+.user__link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
 }
