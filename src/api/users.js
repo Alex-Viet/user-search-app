@@ -5,6 +5,16 @@ export const getUsers = async (name, order) => {
     auth: `Bearer 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`,
   })
 
+  octokit.hook.error('request', async (error) => {
+    if (error.status === 422) {
+      throw new Error('Доступ закрыт')
+    }
+
+    if (error.status === 403) {
+      throw new Error('Превышен лимит')
+    }
+  })
+
   try {
     const response = await octokit.request(
       `GET /search/users?q=${name}&sort=repositories&order=${order}`,
@@ -17,6 +27,6 @@ export const getUsers = async (name, order) => {
 
     return response
   } catch (error) {
-    console.error(error)
+    return error
   }
 }

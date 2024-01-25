@@ -31,6 +31,22 @@ export const App = () => {
     setIsLoading(true)
 
     getUsers(value, selectedOrder).then((response) => {
+      console.log(response)
+
+      if (response == 'Error: Доступ закрыт') {
+        setError(
+          'Возможно, вы запрашиваете ресурс, к которому у вас нет доступа',
+        )
+        setIsLoading(false)
+        return
+      }
+
+      if (response == 'Error: Превышен лимит') {
+        setError('Вы превысили лимит запросов, попробуйте позже')
+        setIsLoading(false)
+        return
+      }
+
       if (response?.status !== 200) {
         setError(
           'Что-то пошло не так. Возможно, проблемы с интернетом или сервером. Попробуйте позже',
