@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import './App.css'
-import { getUsers } from './api/users'
+import { getUsers } from '../../api/users'
+import * as S from './MainPage.styles'
 
-export const App = () => {
+export const MainPage = () => {
   const [value, setValue] = useState('')
   const [error, setError] = useState(null)
   const [users, setUsers] = useState([])
@@ -31,8 +31,6 @@ export const App = () => {
     setIsLoading(true)
 
     getUsers(value, selectedOrder).then((response) => {
-      console.log(response)
-
       if (response == 'Error: Доступ закрыт') {
         setError(
           'Возможно, вы запрашиваете ресурс, к которому у вас нет доступа',
@@ -85,54 +83,64 @@ export const App = () => {
     )
   }
 
-  console.log(users)
-
   return (
-    <div className="App">
-      <div>
-        <input type="text" value={value} onChange={handleInputChange} />
-        <button disabled={isLoading} onClick={handleSearchButtonClick}>
-          Поиск
-        </button>
-        {error && <p style={{ color: 'coral' }}>{error}</p>}
-      </div>
-      <div>
-        <label>
+    <>
+      <S.Header>
+        <S.SearchBlock>
+          <S.SearchInput
+            type="text"
+            value={value}
+            placeholder="Введите логин"
+            onChange={handleInputChange}
+          />
+          <S.SearchButton
+            disabled={isLoading}
+            $disable={isLoading}
+            onClick={handleSearchButtonClick}
+          >
+            Поиск
+          </S.SearchButton>
+        </S.SearchBlock>
+        {error && <S.ErrorText>{error}</S.ErrorText>}
+        <S.OrderLabel>
           Сортировка по количеству репозиториев:
-          <select
+          <S.OrderSelect
             name="selectedOrder"
             onChange={(evt) => setSelectedOrder(evt.target.value)}
           >
-            <option value="desc">По убыванию</option>
-            <option value="asc">По возрастанию</option>
-          </select>
-        </label>
-      </div>
-      <div>
-        <ul>
+            <option value="desc">по убыванию</option>
+            <option value="asc">по возрастанию</option>
+          </S.OrderSelect>
+        </S.OrderLabel>
+      </S.Header>
+      <S.Main>
+        <S.Title>Список пользователей Github</S.Title>
+        <S.List>
           {users.map((user) => (
-            <li className="user__list" key={user.id}>
+            <S.ListItem key={user.id}>
               <div>
-                <p
-                  className="user__login"
+                <S.UserLogin
+                  $active={userId === user.id}
                   onClick={(e) => toggleOpenInfo(e, user.id)}
                 >
                   {user.login}
-                </p>
+                </S.UserLogin>
                 {userId === user.id && (
-                  <div>
-                    <img className="user__img" src={user.avatar_url} />
-                    <div className="user__link">
+                  <S.UserInfoContainer>
+                    <S.UserAvatar src={user.avatar_url} />
+                    <S.UserProfileLink>
                       <p>Ссылка на Github:</p>
-                      <a href={user.html_url}>{user.html_url}</a>
-                    </div>
-                  </div>
+                      <a href={user.html_url} target="_blank" rel="noreferrer">
+                        {user.html_url}
+                      </a>
+                    </S.UserProfileLink>
+                  </S.UserInfoContainer>
                 )}
               </div>
-            </li>
+            </S.ListItem>
           ))}
-        </ul>
-      </div>
-    </div>
+        </S.List>
+      </S.Main>
+    </>
   )
 }
