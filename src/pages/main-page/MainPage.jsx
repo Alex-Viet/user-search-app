@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { getUsers } from '../../api/users'
 import * as S from './MainPage.styles'
+import { Header } from '../../components/header/Header'
+import { Pagination } from '../../components/pagination/Pagination'
 
 const maxPages = 100
 const itemsPerPage = 10
@@ -13,10 +15,6 @@ export const MainPage = () => {
   const [selectedOrder, setSelectedOrder] = useState('desc')
   const [userId, setUserId] = useState(null)
   const [itemOffset, setItemOffset] = useState(0)
-
-  const handleInputChange = (evt) => {
-    setValue(evt.target.value)
-  }
 
   const handleSearchButtonClick = async (evt) => {
     evt.preventDefault()
@@ -94,34 +92,14 @@ export const MainPage = () => {
 
   return (
     <>
-      <S.Header>
-        <S.SearchBlock>
-          <S.SearchInput
-            type="text"
-            value={value}
-            placeholder="Введите логин"
-            onChange={handleInputChange}
-          />
-          <S.SearchButton
-            disabled={isLoading}
-            $disable={isLoading}
-            onClick={handleSearchButtonClick}
-          >
-            Поиск
-          </S.SearchButton>
-        </S.SearchBlock>
-        {error && <S.ErrorText>{error}</S.ErrorText>}
-        <S.OrderLabel>
-          Сортировка по количеству репозиториев:
-          <S.OrderSelect
-            name="selectedOrder"
-            onChange={(evt) => setSelectedOrder(evt.target.value)}
-          >
-            <option value="desc">по убыванию</option>
-            <option value="asc">по возрастанию</option>
-          </S.OrderSelect>
-        </S.OrderLabel>
-      </S.Header>
+      <Header
+        value={value}
+        setValue={setValue}
+        setSelectedOrder={setSelectedOrder}
+        error={error}
+        isLoading={isLoading}
+        handleSearchButtonClick={handleSearchButtonClick}
+      />
       <S.Main>
         <S.Title>Список пользователей Github</S.Title>
         {isLoading ? (
@@ -131,14 +109,9 @@ export const MainPage = () => {
         ) : currentUsers.length ? (
           <>
             {pageCount > 1 && (
-              <S.MyPaginate
-                breakLabel="..."
-                previousLabel="<"
-                nextLabel=">"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={3}
+              <Pagination
+                handlePageClick={handlePageClick}
                 pageCount={pageCount}
-                renderOnZeroPageCount={null}
               />
             )}
             <S.List>
