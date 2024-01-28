@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/core'
 
-export const getUsers = async (name, order) => {
+export const getUsers = async (name, order, page, perPage) => {
   const octokit = new Octokit({
     auth: `Bearer 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`,
   })
@@ -17,7 +17,7 @@ export const getUsers = async (name, order) => {
 
   try {
     const response = await octokit.request(
-      `GET /search/users?q=${name}&sort=repositories&order=${order}`,
+      `GET /search/users?q=${name}&sort=repositories&order=${order}&page=${page}&per_page=${perPage}`,
       {
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
