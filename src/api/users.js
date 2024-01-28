@@ -1,9 +1,7 @@
 import { Octokit } from '@octokit/core'
 
 export const getUsers = async (name, order, page, perPage) => {
-  const octokit = new Octokit({
-    auth: `Bearer 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`,
-  })
+  const octokit = new Octokit()
 
   octokit.hook.error('request', async (error) => {
     if (error.status === 422) {
